@@ -43,7 +43,7 @@ public class AuthenticationService {
                 .lastName(registerRequest.lastName())
                 .email(registerRequest.email())
                 .password(passwordEncoder.encode(registerRequest.password()))
-                .role(Role.USER)
+                .role(registerRequest.role())
                 .build();
         User savedUser = userRepository.save(user);
 
@@ -112,9 +112,8 @@ public class AuthenticationService {
         final String refreshToken;
         final String userEmail;
 
-        if(authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if(authHeader == null || !authHeader.startsWith("Bearer "))
             return;
-        }
 
         refreshToken = authHeader.substring(7);
         userEmail = jwtService.extractUserName(refreshToken);

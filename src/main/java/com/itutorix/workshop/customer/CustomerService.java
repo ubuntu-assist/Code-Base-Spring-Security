@@ -1,17 +1,20 @@
 package com.itutorix.workshop.customer;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final CustomerDTOMapper customerDTOMapper;
+
+    public CustomerService(CustomerRepository customerRepository, CustomerDTOMapper customerDTOMapper) {
+        this.customerRepository = customerRepository;
+        this.customerDTOMapper = customerDTOMapper;
+    }
 
     public List<CustomerDTO> getAllCustomers() {
         return customerRepository
