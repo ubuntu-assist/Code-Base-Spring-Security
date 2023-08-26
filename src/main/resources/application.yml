@@ -1,6 +1,7 @@
 server:
   port: 8080
 
+# Database configurations
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5332/jwt_security
@@ -16,7 +17,14 @@ spring:
     show-sql: true
   main:
     web-application-type: servlet
+  locale:
+    default: en
+    supported: en,fr,de,es
 
+
+
+
+# Security configurations
 application:
   security:
     jwt:

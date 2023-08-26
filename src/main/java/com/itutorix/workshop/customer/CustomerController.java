@@ -5,10 +5,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/customers")
@@ -87,13 +91,21 @@ public class CustomerController {
     }
 
     @PutMapping("{customerId}")
-    public ResponseEntity<?> updateCustomer(@PathVariable("customerId") Integer id, @RequestBody NewCustomerRequest request) {
+    public ResponseEntity<?> updateCustomer(
+            @PathVariable("customerId") Integer id,
+            @RequestBody @Valid NewCustomerRequest request
+    ) {
         customerService.updateCustomer(id, request);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping
-    public ResponseEntity<Integer> createCustomer(@RequestBody NewCustomerRequest request) {
+    public ResponseEntity<NewUserResponse> createCustomer(@RequestBody NewCustomerRequest request) {
         return ResponseEntity.ok(customerService.createCustomer(request));
+    }
+
+    @GetMapping("error")
+    public ResponseEntity<?> throwException() {
+        return ResponseEntity.ok().body(customerService.throwException());
     }
 }

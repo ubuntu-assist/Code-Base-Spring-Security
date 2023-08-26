@@ -1,8 +1,10 @@
 package com.itutorix.workshop.customer;
 
+import com.itutorix.workshop.validators.ObjectsValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -10,10 +12,16 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final CustomerDTOMapper customerDTOMapper;
+    private final ObjectsValidator<NewCustomerRequest> validator;
 
-    public CustomerService(CustomerRepository customerRepository, CustomerDTOMapper customerDTOMapper) {
+    public CustomerService(
+            CustomerRepository customerRepository,
+            CustomerDTOMapper customerDTOMapper,
+            ObjectsValidator<NewCustomerRequest> validator
+    ) {
         this.customerRepository = customerRepository;
         this.customerDTOMapper = customerDTOMapper;
+        this.validator = validator;
     }
 
     public List<CustomerDTO> getAllCustomers() {
@@ -30,7 +38,9 @@ public class CustomerService {
                 .orElseThrow(() -> new IllegalArgumentException("Customer with id [%s] not found".formatted(id)));
     }
 
-    public Integer createCustomer(NewCustomerRequest request) {
+    public NewUserResponse createCustomer(NewCustomerRequest request) {
+        validator.validate(request);
+
         Customer customer = customerRepository.findByEmail(request.email())
                 .orElse(null);
 
@@ -45,7 +55,10 @@ public class CustomerService {
                 .build();
 
         Customer savedCustomer = customerRepository.save(newCustomer);
-        return savedCustomer.getId();
+        return new NewUserResponse(
+                "Customer successfully created",
+                savedCustomer.getId()
+        );
     }
 
     public void deleteCustomer(Integer id) {
@@ -82,5 +95,9 @@ public class CustomerService {
             throw new IllegalArgumentException("No changes found");
 
         customerRepository.save(customer);
+    }
+
+    public String throwException() {
+        throw new IllegalStateException("There is an exception");
     }
 }
