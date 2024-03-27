@@ -1,6 +1,5 @@
 package com.itutorix.workshop.user;
 
-import com.itutorix.workshop.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

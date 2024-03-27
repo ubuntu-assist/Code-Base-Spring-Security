@@ -1,7 +1,7 @@
 package com.itutorix.workshop.config;
 
 import com.itutorix.workshop.token.Token;
-import com.itutorix.workshop.token.TokenRespository;
+import com.itutorix.workshop.token.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +13,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class LogoutService implements LogoutHandler {
 
-    private final TokenRespository tokenRespository;
+    private final TokenRepository tokenRepository;
 
+    /**
+     * Handles the logout process by revoking the provided JWT token.
+     *
+     * @param request  The HTTP servlet request containing the Authorization header.
+     * @param response The HTTP servlet response.
+     * @param authentication The authentication object representing the user being logged out.
+     *
+     * @return Void.
+     */
     @Override
     public void logout(
             HttpServletRequest request,
@@ -24,17 +33,18 @@ public class LogoutService implements LogoutHandler {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
 
-        if(authHeader == null || !authHeader.startsWith("Bearer "))
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return;
+        }
 
         jwt = authHeader.substring(7);
 
-        Token token = tokenRespository.findByToken(jwt).orElse(null);
+        Token token = tokenRepository.findByToken(jwt).orElse(null);
 
-        if(token != null) {
+        if (token != null) {
             token.setRevoked(true);
             token.setExpired(true);
-            tokenRespository.save(token);
+            tokenRepository.save(token);
         }
     }
 }

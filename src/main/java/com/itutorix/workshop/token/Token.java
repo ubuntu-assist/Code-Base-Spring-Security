@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -33,6 +35,7 @@ public class Token {
     private boolean expired;
 
     private boolean revoked;
+    private LocalDateTime validatedAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id")

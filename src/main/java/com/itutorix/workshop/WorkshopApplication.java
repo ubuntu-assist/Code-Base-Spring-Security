@@ -2,16 +2,19 @@ package com.itutorix.workshop;
 
 import com.itutorix.workshop.auth.AuthenticationService;
 import com.itutorix.workshop.auth.RegisterRequest;
-import com.itutorix.workshop.user.Role;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import static com.itutorix.workshop.user.Role.ADMIN;
 import static com.itutorix.workshop.user.Role.MANAGER;
 
 @SpringBootApplication
+@Slf4j
+@EnableJpaAuditing(auditorAwareRef = "auditorAware")
 public class WorkshopApplication {
 
 	public static void main(String[] args) {
@@ -30,7 +33,7 @@ public class WorkshopApplication {
 					"password",
 					ADMIN
 			);
-			System.out.println("Admin token: " + authenticationService.register(admin).accessToken());
+			log.info("\nAdmin token: " + authenticationService.register(admin).accessToken());
 
 			RegisterRequest manager = new RegisterRequest(
 					"Manager",
@@ -39,7 +42,7 @@ public class WorkshopApplication {
 					"password",
 					MANAGER
 			);
-			System.out.println("Manager token: " + authenticationService.register(manager).accessToken());
+			log.info("\nManager token: " + authenticationService.register(manager).accessToken());
 		};
 	}
 }

@@ -1,6 +1,6 @@
 package com.itutorix.workshop.config;
 
-import com.itutorix.workshop.token.TokenRespository;
+import com.itutorix.workshop.token.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,8 +23,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
-    private final TokenRespository tokenRespository;
+    private final TokenRepository tokenRepository;
 
+
+    /**
+     * This method is overridden from {@link OncePerRequestFilter#doFilterInternal(HttpServletRequest, HttpServletResponse, FilterChain)}
+     * and is responsible for handling the HTTP request and response.
+     * It extracts the JWT from the Authorization header, validates it, and sets the user's details in the Spring Security context.
+     *
+     * @param request  the HTTP request
+     * @param response the HTTP response
+     * @param filterChain the filter chain
+     * @throws ServletException if there is an error processing the request
+     * @throws IOException       if there is an error reading or writing to the request or response
+     */
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -46,7 +58,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if(userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-            boolean isTokenValid = tokenRespository.findByToken(jwt)
+            boolean isTokenValid = tokenRepository.findByToken(jwt)
                     .map(token -> !token.isExpired() && !token.isRevoked())
                     .orElse(false);
 

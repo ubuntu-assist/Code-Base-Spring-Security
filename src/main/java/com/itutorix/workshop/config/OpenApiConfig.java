@@ -10,11 +10,20 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 
+/**
+ * This class is responsible for configuring the OpenAPI specification for the Spring Security application.
+ * It provides information about the API, its endpoints, and the security requirements.
+ *
+ * @author Duclair FOPA KUETE
+ * @email duclair.fopa@kimbocare.com
+ * @url https://fkd.netlify.app
+ * @version 1.0
+ */
 @OpenAPIDefinition(
         info = @Info(
                 contact = @Contact(
                         name = "Duclair FOPA KUETE",
-                        email = "fopaduclair2000@dimsoft.eu",
+                        email = "duclair.fopa@kimbocare.com",
                         url = "https://fkd.netlify.app"
                 ),
                 description = "OpenAPI Documentation for Spring Security",

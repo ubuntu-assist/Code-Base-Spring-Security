@@ -4,8 +4,7 @@ import com.itutorix.workshop.validators.ObjectsValidator;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.function.Consumer;
 
 @Service
 public class CustomerService {
@@ -24,21 +23,39 @@ public class CustomerService {
         this.validator = validator;
     }
 
+    /**
+     * Returns a list of all customers in the system.
+     *
+     * @return a list of all customers
+     */
     public List<CustomerDTO> getAllCustomers() {
         return customerRepository
-                .findAll()
-                .stream()
-                .map(customerDTOMapper)
-                .collect(Collectors.toList());
+               .findAll()
+               .stream()
+               .map(customerDTOMapper)
+               .toList();
     }
 
+    /**
+     * Retrieves a single customer from the system by its id.
+     *
+     * @param id the unique identifier of the customer
+     * @return the requested customer as a DTO, or throws an {@link IllegalArgumentException} if the customer with the given id is not found
+     */
     public CustomerDTO getSingleCustomer(Integer id) {
         return customerRepository.findById(id)
                 .map(customerDTOMapper)
                 .orElseThrow(() -> new IllegalArgumentException("Customer with id [%s] not found".formatted(id)));
     }
 
-    public NewUserResponse createCustomer(NewCustomerRequest request) {
+    /**
+     * Creates a new customer in the system.
+     *
+     * @param request the request containing the details of the new customer
+     * @return a response containing a message and the id of the newly created customer
+     * @throws IllegalArgumentException if the email provided in the request is already taken
+     */
+    public NewCustomerResponse createCustomer(NewCustomerRequest request) {
         validator.validate(request);
 
         Customer customer = customerRepository.findByEmail(request.email())
@@ -52,15 +69,22 @@ public class CustomerService {
                 .age(request.age())
                 .name(request.name())
                 .email(request.email())
+                .password(request.password())
                 .build();
 
         Customer savedCustomer = customerRepository.save(newCustomer);
-        return new NewUserResponse(
+        return new NewCustomerResponse(
                 "Customer successfully created",
                 savedCustomer.getId()
         );
     }
 
+    /**
+     * Deletes a customer from the system by its id.
+     *
+     * @param id the unique identifier of the customer to be deleted
+     * @throws IllegalArgumentException if the customer with the given id is not found
+     */
     public void deleteCustomer(Integer id) {
         boolean exists = customerRepository.existsById(id);
 
@@ -70,34 +94,45 @@ public class CustomerService {
         customerRepository.deleteById(id);
     }
 
+    /**
+     * Updates an existing customer in the system.
+     *
+     * @param id the unique identifier of the customer to be updated
+     * @param request the request containing the details of the new customer
+     * @throws IllegalArgumentException if the customer with the given id is not found
+     */
     public void updateCustomer(Integer id, NewCustomerRequest request) {
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Customer with id [%s] not found".formatted(id)));
 
         boolean changes = false;
 
-        if(request.email() != null && !customer.getEmail().equals(request.email())) {
-            customer.setEmail(request.email());
-            changes = true;
-        }
+        changes |= updateFieldIfNecessary(request.email(), customer.getEmail(), customer::setEmail);
+        changes |= updateFieldIfNecessary(request.name(), customer.getName(), customer::setName);
+        changes |= updateFieldIfNecessary(request.age(), customer.getAge(), customer::setAge);
 
-        if(request.name() != null && !customer.getName().equals(request.name())) {
-            customer.setName(request.name());
-            changes = true;
-        }
-
-        if(request.age() != null && !request.age().equals(customer.getAge())) {
-            customer.setAge(request.age());
-            changes = true;
-        }
-
-        if(!changes)
+        if (!changes) {
             throw new IllegalArgumentException("No changes found");
+        }
 
         customerRepository.save(customer);
     }
 
-    public String throwException() {
-        throw new IllegalStateException("There is an exception");
+    /**
+     * Compares the new value with the current value and updates the current value if they are different.
+     * Returns true if an update was made, false otherwise.
+     *
+     * @param newValue the new value to be set
+     * @param currentValue the current value
+     * @param updateFunction the function to update the current value
+     * @param <T> the type of the value
+     * @return true if an update was made, false otherwise
+     */
+    private <T> boolean updateFieldIfNecessary(T newValue, T currentValue, Consumer<T> updateFunction) {
+        if (newValue != null && !newValue.equals(currentValue)) {
+            updateFunction.accept(newValue);
+            return true;
+        }
+        return false;
     }
 }

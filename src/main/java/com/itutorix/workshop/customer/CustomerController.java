@@ -5,14 +5,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/v1/customers")
@@ -36,7 +33,7 @@ public class CustomerController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = Customer.class)
+                                            schema = @Schema(implementation = CustomerDTO.class)
                                     )
                             }
                     ),
@@ -63,7 +60,7 @@ public class CustomerController {
                             content = {
                                     @Content(
                                             mediaType = "application/json",
-                                            schema = @Schema(implementation = Customer.class)
+                                            schema = @Schema(implementation = CustomerDTO.class)
                                     )
                             }
                     ),
@@ -89,23 +86,21 @@ public class CustomerController {
         customerService.deleteCustomer(id);
         return ResponseEntity.ok().build();
     }
+    
 
     @PutMapping("{customerId}")
     public ResponseEntity<?> updateCustomer(
             @PathVariable("customerId") Integer id,
-            @RequestBody @Valid NewCustomerRequest request
+            @RequestBody NewCustomerRequest request
     ) {
         customerService.updateCustomer(id, request);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping
-    public ResponseEntity<NewUserResponse> createCustomer(@RequestBody NewCustomerRequest request) {
-        return ResponseEntity.ok(customerService.createCustomer(request));
-    }
-
-    @GetMapping("error")
-    public ResponseEntity<?> throwException() {
-        return ResponseEntity.ok().body(customerService.throwException());
+    public ResponseEntity<NewCustomerResponse> createCustomer(@RequestBody NewCustomerRequest request) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(customerService.createCustomer(request));
     }
 }

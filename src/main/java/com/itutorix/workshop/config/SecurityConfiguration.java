@@ -3,7 +3,6 @@ package com.itutorix.workshop.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +13,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
+
+import java.util.List;
 
 import static com.itutorix.workshop.user.Permission.*;
 import static com.itutorix.workshop.user.Role.ADMIN;
@@ -30,6 +34,13 @@ public class SecurityConfiguration {
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
 
+    /**
+     * Configures the Spring Security filter chain.
+     *
+     * @param httpSecurity the HttpSecurity builder
+     * @return the SecurityFilterChain instance
+     * @throws Exception if any error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -45,9 +56,9 @@ public class SecurityConfiguration {
                                 "/configuration/security",
                                 "/swagger-ui/**",
                                 "/webjars/**",
-                                "/swagger-ui.html",
-                                "/api/v1/customers"
+                                "/swagger-ui.html"
                         ).permitAll()
+
 
                         .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name(), MANAGER.name())
                         .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(ADMIN_READ.name(), MANAGER_READ.name())
@@ -71,8 +82,28 @@ public class SecurityConfiguration {
                             .logoutUrl("/api/v1/auth/logout")
                             .addLogoutHandler(logoutHandler)
                             .logoutSuccessHandler((request, response, authentication) -> SecurityContextHolder.clearContext());
+                })
+                .cors(httpSecurityCorsConfigurer -> {
+
                 });
 
         return httpSecurity.build();
+    }
+
+    /**
+     * Configures the CORS filter for the application.
+     *
+     * @return a new instance of {@link CorsFilter} with the specified configuration
+     */
+    @Bean
+    public CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:4200"));
+        configuration.setAllowedHeaders(List.of("Origin", "Content-Type", "Accept", "Authorization"));
+        configuration.setAllowedMethods(List.of("POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        source.registerCorsConfiguration("/**", configuration);
+        return new CorsFilter(source);
     }
 }

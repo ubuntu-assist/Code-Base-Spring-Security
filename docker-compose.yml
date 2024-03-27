@@ -6,6 +6,7 @@ services:
       POSTGRES_USER: itutorix
       POSTGRES_PASSWORD: password
       PGDATA: /data/postgres
+      POSTGRES_DB: nest
     volumes:
       - db:/data/postgres
     ports:

@@ -1,9 +1,13 @@
 package com.itutorix.workshop.config;
 
+import com.itutorix.workshop.Auditing.ApplicationAuditAware;
 import com.itutorix.workshop.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.domain.AuditorAware;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -31,6 +35,11 @@ public class ApplicationConfig {
         daoAuthProvider.setUserDetailsService(userDetailsService());
         daoAuthProvider.setPasswordEncoder(passwordEncoder());
         return daoAuthProvider;
+    }
+
+    @Bean
+    public AuditorAware<Integer> auditorAware() {
+        return new ApplicationAuditAware();
     }
 
     @Bean

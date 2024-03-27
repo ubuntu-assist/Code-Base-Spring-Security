@@ -1,14 +1,12 @@
 package com.itutorix.workshop.auth;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -16,6 +14,7 @@ import java.io.IOException;
 @RequestMapping("api/v1/auth")
 @RequiredArgsConstructor
 @Tag(name = "Authentication")
+@Hidden
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
@@ -36,5 +35,10 @@ public class AuthenticationController {
             HttpServletResponse response
     ) throws IOException {
         authenticationService.refreshToken(request, response);
+    }
+
+    @GetMapping("confirm")
+    public ResponseEntity<String> confirm(@RequestParam String token) {
+        return ResponseEntity.ok(authenticationService.confirm(token));
     }
 }

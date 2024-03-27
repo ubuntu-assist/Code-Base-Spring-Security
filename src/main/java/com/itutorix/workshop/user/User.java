@@ -1,14 +1,12 @@
 package com.itutorix.workshop.user;
 
 import com.itutorix.workshop.token.Token;
-import com.itutorix.workshop.user.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -36,6 +34,8 @@ public class User implements UserDetails {
     private String lastName;
     private String email;
     private String password;
+    private boolean enabled;
+    private boolean locked;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -60,7 +60,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !locked;
     }
 
     @Override
@@ -70,6 +70,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }
