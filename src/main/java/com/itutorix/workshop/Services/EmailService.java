@@ -59,7 +59,7 @@ public class EmailService {
 
         helper.setFrom("fopaduclair2000@gmail.com");
         helper.setTo(to);
-        helper.setSubject("Welcome to CodeChainX");
+        helper.setSubject("Welcome to Ubuntu Assist");
 
         String template = templateEngine.process(templateName, context);
 

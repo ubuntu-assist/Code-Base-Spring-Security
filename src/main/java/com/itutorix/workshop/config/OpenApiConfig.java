@@ -16,7 +16,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
  *
  * @author Duclair FOPA KUETE
  * @email duclair.fopa@kimbocare.com
- * @url https://fkd.netlify.app
+ * @url <a href="https://fkd.netlify.app">...</a>
  * @version 1.0
  */
 @OpenAPIDefinition(
@@ -26,7 +26,7 @@ import io.swagger.v3.oas.annotations.servers.Server;
                         email = "duclair.fopa@kimbocare.com",
                         url = "https://fkd.netlify.app"
                 ),
-                description = "OpenAPI Documentation for Spring Security",
+                description = "OpenAPI Documentation for Ubuntu Assist",
                 title = "OpenAPI Specification",
                 license = @License(
                         url = "https://something.com",

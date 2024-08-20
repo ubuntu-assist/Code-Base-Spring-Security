@@ -2,6 +2,7 @@ package com.itutorix.workshop.Auditing;
 
 import com.itutorix.workshop.user.User;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,6 +18,7 @@ public class ApplicationAuditAware implements AuditorAware<Integer> {
      * @return an {@link Optional} containing the authenticated user's ID, or an empty {@link Optional} if no user is authenticated or the user is anonymous.
      */
     @Override
+    @NonNull
     public Optional<Integer> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 

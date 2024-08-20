@@ -6,13 +6,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 class CustomerServiceTest {
 
@@ -28,7 +28,7 @@ class CustomerServiceTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        openMocks(this);
     }
 
     @Test
@@ -41,16 +41,14 @@ class CustomerServiceTest {
                 "demoFkd$2"
         );
 
-        Customer newCustomer = Customer
-                .builder()
+        Customer newCustomer = Customer.builder()
                 .age(request.age())
                 .name(request.name())
                 .email(request.email())
                 .password(request.password())
                 .build();
 
-        Customer savedCustomer = Customer
-                .builder()
+        Customer savedCustomer = Customer.builder()
                 .id(1)
                 .age(request.age())
                 .name(request.name())
@@ -77,8 +75,7 @@ class CustomerServiceTest {
     void itShouldThrowWhenEmailAlreadyExists() {
         // Given
         NewCustomerRequest request = new NewCustomerRequest("John Doe", "john@example.com", 30, "password123");
-        Customer existingCustomer = Customer
-                .builder()
+        Customer existingCustomer = Customer.builder()
                 .id(1)
                 .age(request.age())
                 .name(request.name())

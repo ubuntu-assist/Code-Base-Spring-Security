@@ -4,7 +4,7 @@ server:
 # Database configurations
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5332/jwt_security
+    url: jdbc:postgresql://localhost:5332/ubuntu_assist
     username: itutorix
     password: password
   jpa:
