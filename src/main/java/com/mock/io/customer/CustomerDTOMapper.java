@@ -24,8 +24,8 @@ public class CustomerDTOMapper implements Function<Customer, CustomerDTO> {
                 customer.getName(),
                 customer.getEmail(),
                 customer.getAge(),
-                customer.getCreateDate(),
-                customer.getLastModified(),
+                customer.getCreatedDate(),
+                customer.getLastModifiedDate(),
                 customer.getCreatedBy(),
                 customer.getLastModifiedBy()
         );
