@@ -1,49 +1,12 @@
-server:
-  port: 8080
-
-# Database configurations
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5332/ubuntu_assist
-    username: itutorix
-    password: password
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-    show-sql: true
-  main:
-    web-application-type: servlet
-  locale:
-    default: en
-    supported: en,fr,de,es
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 50MB
 
-  mail:
-    host: localhost
-    port: 1025
-    username: ali
-    password: ali
-    properties:
-      mail:
-        smtp:
-          trust: "*"
-        auth: true
-        starttls:
-          enabled: true
-        connectiontimeout: 5000
-        timeout: 3000
-        writetimeout: 5000
-
-
-
-# Security configurations
-application:
-  security:
-    jwt:
-      secret-key: bc3d1c730bba015e73351257355245f1524860c1b9f4fe9d74351ed8a2883fcb
-      expiration: 60000000 # a day
-      refresh-token:
-        expiration: 604800000 # a week
+springdoc:
+  default-produces-media-type: application/json
+server:
+  servlet:
+    context-path: /api/v1/

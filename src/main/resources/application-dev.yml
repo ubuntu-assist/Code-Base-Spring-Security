@@ -1,0 +1,45 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5332/general_db
+    username: username
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: false
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  mail:
+    host: localhost
+    port: 1025
+    username: moock
+    password: moock
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enabled: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+
+application:
+  security:
+    jwt:
+      secret-key: bc3d1c730bba015e73351257355245f1524860c1b9f4fe9d74351ed8a2883fcb
+      expiration: 60000000
+      refresh-token:
+        expiration: 604800000
+  mailing:
+    frontend:
+      activation-url: http://localhost:5173/activate-account
+
+server:
+  port: 8088
