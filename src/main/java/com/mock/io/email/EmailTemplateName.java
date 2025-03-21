@@ -1,5 +1,6 @@
 package com.mock.io.email;
 
+
 import lombok.Getter;
 
 @Getter
